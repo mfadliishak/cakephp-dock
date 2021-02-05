@@ -24,6 +24,12 @@ $ docker-compose build
 $ docker-compose up -d
 ```
 
+### Check containers ###
+
+```
+$ docker ps
+```
+
 ### Enter PHP-FPM Container
 
 ```
