@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   mysql:
     restart: always
@@ -6,13 +6,15 @@ services:
     volumes:
       - "./data/mysql/db:/var/lib/mysql"
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_USER: my_app
-      MYSQL_PASSWORD: secret
-      MYSQL_DATABASE: my_app
-      TZ: "Asia/Tokyo"
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${TZ}
     ports:
-      - "3307:3306"
+      - "${MYSQL_PORT}:3306"
+    networks:
+       - backend
   nginx:
     restart: always
     image: "nginx:mainline-alpine"
@@ -28,6 +30,8 @@ services:
       - phpfpm
     links:
       - phpfpm
+    networks:
+       - backend
   phpfpm:
     build: ./data/phpfpm/
     environment:
@@ -38,11 +42,13 @@ services:
       - mysql
     links:
       - mysql
+    networks:
+       - backend
   host:
     build: ./data/htdocs
     environment:
       TZ: "Asia/Tokyo"
-      PRJ: "sample"
+      PRJ: "project" # This is the project name.
     volumes:
       - "./data/htdocs:/root"
     ports:
@@ -53,3 +59,31 @@ services:
     links:
       - mysql
       - phpfpm
+    networks:
+       - backend
+  phpmyadmin:
+    # Dockerfile
+    build: ./data/phpmyadmin
+    # Environment
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - MYSQL_USER=${PMA_USER}
+      - MYSQL_PASSWORD=${PMA_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${PMA_ROOT_PASSWORD}
+    # Mount host directory(host:container)
+    volumes:
+      - ./data/share/phpmyadmin:/share
+    # Port forwarding(host:container)
+    ports:
+      - "${PMA_PORT}:80"
+    networks:
+       - backend
+    # Container dependencies
+    depends_on:
+      - mysql
+    # Restart
+    restart: always
+networks:
+  backend:
+    driver: bridge
