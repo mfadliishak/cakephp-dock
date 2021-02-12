@@ -48,7 +48,7 @@ services:
     build: ./data/htdocs
     environment:
       TZ: "Asia/Tokyo"
-      PRJ: "project" # This is the project name.
+      PRJ: "app/source" # path of the cakephp project
     volumes:
       - "./data/htdocs:/root"
     ports:

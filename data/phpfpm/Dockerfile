@@ -1,4 +1,4 @@
-FROM php:7.1-fpm-alpine
+FROM php:7-fpm-alpine
 RUN set -x && \
   apk add --no-cache icu-libs && \
   apk add --no-cache --virtual build-dependencies icu-dev && \
