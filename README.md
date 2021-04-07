@@ -93,4 +93,41 @@ You can check at http://localhost:8765
 $ docker-compose down 
 ```
 
+※We can add other cakephp project into data/htdocs/app and change `PRJ:` as instructed above accordingly.
 
+※Other cakephp project may encounter mysql error `SQLSTATE[HY000] [2002] No such file or directory`.
+This can be solved by modifying cakephp's `config/app.php` under database host should change the IP address
+
+```
+'Datasources' => [
+        'default' => [
+            'className' => 'Cake\Database\Connection',
+            'driver' => 'Cake\Database\Driver\Mysql',
+            'persistent' => false,
+            'host' => 'localhost', #here need to change
+```
+
+What IP address to specify here, must access mysql server as follows:
+
+```
+$ docker exec -it docker-cakephp3-template_mysql_1  /bin/bash
+$ cat /etc/hosts
+```
+
+it will shows something like this:
+
+```
+127.0.0.1   localhost
+::1 localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.21.0.2  371725c16aa6
+```
+
+`371725c16aa6` is DB container ID, so we use `172.21.0.2` to the `app.php` for above:
+
+```
+'host' => '172.21.0.2',
+```
