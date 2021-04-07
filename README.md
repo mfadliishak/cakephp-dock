@@ -93,6 +93,8 @@ You can check at http://localhost:8765
 $ docker-compose down 
 ```
 
+## Other topics
+
 ※We can add other cakephp project into data/htdocs/app and change `PRJ:` as instructed above accordingly.
 
 ※Other cakephp project may encounter mysql error `SQLSTATE[HY000] [2002] No such file or directory`.
